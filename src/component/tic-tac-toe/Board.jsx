@@ -2,7 +2,7 @@ import React from "react";
 import Square from "./Square";
 import "./tictactoe.css";
 
-function Board(xIsNext, squares, onPlay) {
+function Board({ xIsNext, squares, onPlay }) {
   function calculateWinner(squares) {
     const lines = [
       [0, 1, 2],
@@ -14,38 +14,30 @@ function Board(xIsNext, squares, onPlay) {
       [0, 4, 8],
       [2, 4, 6],
     ];
-
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
         return squares[a];
       }
-      return null;
     }
+    return null;
   }
 
   const winner = calculateWinner(squares);
   let status;
-
   if (winner) {
     status = `Winner: ${winner}`;
   } else {
     status = `Next player: ${xIsNext ? "X" : "O"}`;
   }
+
   const handleClick = (i) => {
-    if (nextSquares[i] || calculateWinner(nextSquares)) {
+    // 如果此方格已填值或有勝者則不繼續執行
+    if (squares[i] || calculateWinner(squares)) {
       return;
     }
     const nextSquares = squares.slice();
-    if (xIsNext) {
-      nextSquares[i] = "X";
-    } else {
-      nextSquares[i] = "O";
-    }
+    nextSquares[i] = xIsNext ? "X" : "O";
     onPlay(nextSquares);
   };
 
@@ -66,6 +58,7 @@ function Board(xIsNext, squares, onPlay) {
         <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
         <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
+      <div>{status}</div>
     </>
   );
 }
